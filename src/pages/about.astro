@@ -1,22 +1,22 @@
 ---
----
 import Base from "../layouts/Base.astro";
 import AboutPage from "../content/pages/about.md";
 
 const {
+  title = "About",
   kicker = "FIELD NOTES",
   headline = "About",
   bio = "",
   headshot = "",
-  socials = []
+  socials = [],
 } = AboutPage.frontmatter;
 
 const Content = AboutPage;
 
-
 function iconSvg(name) {
   const common = `width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
     stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"`;
+
   switch (name) {
     case "mail":
       return `<svg ${common}><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg>`;
@@ -37,34 +37,40 @@ function iconSvg(name) {
   }
 }
 ---
-<Base title="About">
+
+<Base title={title}>
   <section class="about">
     <header class="hero">
-    <div style="display:flex; gap:18px; align-items:center; flex-wrap:wrap;">
-  {headshot && (
-    <img
-      src={headshot}
-      alt="Portrait"
-      loading="lazy"
-      style="
-        width:96px;
-        height:96px;
-        border-radius:16px;
-        object-fit:cover;
-        border:1px solid rgba(255,255,255,0.14);
-        box-shadow:0 10px 30px rgba(0,0,0,0.55);
-        filter: contrast(1.05) saturate(0.95);
-      "
-    />
-  )}
-      <div class="heroTop">
-        <div class="kicker">{kicker}</div>
-        <h1 class="title">
-          {headline} <span class="glitch" aria-hidden="true">{headline}</span>
-        </h1>
+      <div style="display:flex; gap:18px; align-items:center; flex-wrap:wrap;">
+        {headshot && (
+          <img
+            src={headshot}
+            alt="Portrait"
+            loading="lazy"
+            style="
+              width:96px;
+              height:96px;
+              border-radius:16px;
+              object-fit:cover;
+              border:1px solid rgba(255,255,255,0.14);
+              box-shadow:0 10px 30px rgba(0,0,0,0.55);
+              filter: contrast(1.05) saturate(0.95);
+            "
+          />
+        )}
+
+        <div class="heroTop">
+          <div class="kicker">{kicker}</div>
+          <h1 class="title">
+            {headline}
+            <span class="glitch" aria-hidden="true">{headline}</span>
+          </h1>
+        </div>
       </div>
-</div>
-      {bio && <p class="lede">{bio}</p>}
+
+      {bio && (
+        <p class="lede">{bio}</p>
+      )}
 
       <div class="links" aria-label="Social links">
         {socials.map((l) => (
@@ -103,33 +109,17 @@ function iconSvg(name) {
         <a class="btnPrimary" href="mailto:sentermaxx@gmail.com">Send Email</a>
       </article>
     </div>
-    {Content && (
-  <article style="margin-top:24px; max-width:70ch; color:var(--muted);">
-    <Content />
-  </article>
-)}
 
+    <article style="margin-top:24px; max-width:70ch; color: var(--muted);">
+      <Content />
+    </article>
   </section>
 
   <style>
-    /* Indie horror meets modern responsive: restrained, tactile, high-contrast */
-    .about {
-      padding: 18px 0 42px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
+    .about { padding: 18px 0 42px; max-width: 1100px; margin: 0 auto; }
 
-    .about article p {
-  margin-bottom: 1em;
-}
-
-.about article h2 {
-  margin-top: 1.6em;
-  font-size: 14px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
+    .about article p { margin-bottom: 1em; }
+    .about article h2 { margin-top: 1.6em; font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase; }
 
     .hero {
       position: relative;
@@ -144,7 +134,6 @@ function iconSvg(name) {
       box-shadow: 0 14px 40px rgba(0,0,0,0.45);
     }
 
-    /* film grain + scanlines */
     .hero::before {
       content: "";
       position: absolute;
@@ -173,15 +162,7 @@ function iconSvg(name) {
       opacity: 0.55;
     }
 
-    .heroTop {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 14px;
-      position: relative;
-      z-index: 1;
-    }
-
+    .heroTop { display:flex; align-items:baseline; justify-content:space-between; gap:14px; position:relative; z-index:1; }
     .kicker {
       font-size: 12px;
       letter-spacing: 0.18em;
@@ -192,83 +173,24 @@ function iconSvg(name) {
       border-radius: 999px;
       background: rgba(0,0,0,0.25);
     }
+    .title { margin: 10px 0 8px; font-size: clamp(28px, 3.6vw, 44px); line-height: 1.05; position: relative; z-index: 1; }
+    .glitch { position:absolute; left:0; top:0; opacity:0.16; transform: translate(2px, 1px); filter: blur(0.2px); pointer-events:none; }
+    .lede { margin: 8px 0 16px; color: var(--muted); max-width: 70ch; position: relative; z-index: 1; }
 
-    .title {
-      margin: 10px 0 8px;
-      font-size: clamp(28px, 3.6vw, 44px);
-      line-height: 1.05;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* subtle “double exposure” glitch */
-    .glitch {
-      position: absolute;
-      left: 0;
-      top: 0;
-      opacity: 0.16;
-      transform: translate(2px, 1px);
-      filter: blur(0.2px);
-      pointer-events: none;
-    }
-
-    .lede {
-      margin: 8px 0 16px;
-      color: var(--muted);
-      max-width: 70ch;
-      position: relative;
-      z-index: 1;
-    }
-
-    .links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 14px;
-      position: relative;
-      z-index: 1;
-    }
-
+    .links { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; position:relative; z-index:1; }
     .iconLink {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(0,0,0,0.25);
-      text-decoration: none;
-      color: inherit;
+      display:inline-flex; align-items:center; gap:10px; padding:10px 12px; border-radius:999px;
+      border:1px solid rgba(255,255,255,0.12); background:rgba(0,0,0,0.25); text-decoration:none; color:inherit;
       transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
       backdrop-filter: blur(8px);
     }
-    .iconLink:hover {
-      transform: translateY(-1px);
-      border-color: rgba(255,255,255,0.22);
-      background: rgba(255,255,255,0.04);
-    }
-    .iconLink:active {
-      transform: translateY(0px);
-    }
-    .iconLink svg {
-      opacity: 0.9;
-    }
-    .iconText {
-      font-size: 14px;
-      letter-spacing: 0.01em;
-    }
+    .iconLink:hover { transform: translateY(-1px); border-color: rgba(255,255,255,0.22); background: rgba(255,255,255,0.04); }
+    .iconLink:active { transform: translateY(0px); }
+    .iconLink svg { opacity: 0.9; }
+    .iconText { font-size: 14px; letter-spacing: 0.01em; }
 
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 14px;
-      margin-top: 16px;
-    }
-    @media (min-width: 860px) {
-      .grid {
-        grid-template-columns: 1.2fr 0.9fr 0.9fr;
-      }
-    }
+    .grid { display:grid; grid-template-columns: 1fr; gap:14px; margin-top:16px; }
+    @media (min-width: 860px) { .grid { grid-template-columns: 1.2fr 0.9fr 0.9fr; } }
 
     .card {
       border: 1px solid rgba(255,255,255,0.10);
@@ -277,36 +199,16 @@ function iconSvg(name) {
       background: rgba(0,0,0,0.18);
       box-shadow: 0 10px 26px rgba(0,0,0,0.35);
     }
-    .card h2 {
-      margin: 0 0 8px;
-      font-size: 16px;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-    .card p, .card li {
-      color: var(--muted);
-    }
-    .card ul {
-      margin: 10px 0 0 18px;
-    }
+    .card h2 { margin: 0 0 8px; font-size: 16px; letter-spacing: 0.06em; text-transform: uppercase; }
+    .card p, .card li { color: var(--muted); }
+    .card ul { margin: 10px 0 0 18px; }
 
     .btnPrimary {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: 10px;
-      padding: 10px 14px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.16);
-      background: rgba(255,255,255,0.06);
-      text-decoration: none;
-      color: inherit;
+      display:inline-flex; align-items:center; justify-content:center; margin-top:10px; padding:10px 14px;
+      border-radius:12px; border:1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.06);
+      text-decoration:none; color:inherit;
       transition: transform 140ms ease, background 140ms ease, border-color 140ms ease;
     }
-    .btnPrimary:hover {
-      transform: translateY(-1px);
-      background: rgba(255,255,255,0.09);
-      border-color: rgba(255,255,255,0.24);
-    }
+    .btnPrimary:hover { transform: translateY(-1px); background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.24); }
   </style>
 </Base>
