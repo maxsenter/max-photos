@@ -1,9 +1,8 @@
 ---
 // src/components/YoutubeModal.astro
 //
-// ID-only YouTube modal with validation.
-// Opens when location.hash matches openHash (default: #play).
-// Removes iframe on close so playback stops.
+// Large-format cinematic YouTube modal.
+// Opens via hash (default: #play) and removes iframe on close.
 
 const {
   open = false,
@@ -39,10 +38,10 @@ const embedBase = valid ? `https://www.youtube.com/embed/${id}` : '';
       <div class="ytMissing">
         <div class="ytMissingTitle">Invalid YouTube ID</div>
         <p>
-          Expected an 11-character YouTube video ID (letters, numbers, <code>_</code>, or <code>-</code>).<br />
+          Expected an 11-character YouTube video ID.<br />
           Current value: <code>{id || '(empty)'}</code>
         </p>
-        <p style="margin: 0; opacity: .9;">
+        <p style="margin:0; opacity:.9;">
           Example: <code>dQw4w9WgXcQ</code>
         </p>
       </div>
@@ -97,12 +96,12 @@ const embedBase = valid ? `https://www.youtube.com/embed/${id}` : '';
     setOpen(false);
   }
 
-  for (var i = 0; i < closeButtons.length; i++) {
-    closeButtons[i].addEventListener('click', function (e) {
+  closeButtons.forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
       e.preventDefault();
       closeModal();
     });
-  }
+  });
 
   window.addEventListener('keydown', function (e) {
     if (e.key === 'Escape' && modal.dataset.open === '1') closeModal();
@@ -112,32 +111,70 @@ const embedBase = valid ? `https://www.youtube.com/embed/${id}` : '';
     setOpen(isOpenByHash());
   });
 
-  // Initial state
   setOpen(isOpenByHash() || modal.dataset.open === '1');
 })();
 </script>
 
 <style>
-  .ytModal { display:none; position:fixed; inset:0; z-index:1000; }
+  /* Modal root */
+  .ytModal {
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:9999;
+  }
   .ytModal[data-open='1'] { display:block; }
 
-  .ytBackdrop { position:fixed; inset:0; background:rgba(0,0,0,.70); }
-
-  .ytPanel { position:fixed; inset:0; display:grid; place-items:center; padding:18px; }
-
-  .ytFrame {
-    width:min(980px, 94vw);
-    aspect-ratio:16/9;
-    background:#000;
-    border-radius:16px;
-    overflow:hidden;
-    box-shadow:0 20px 60px rgba(0,0,0,.45);
+  /* Lights-down backdrop */
+  .ytBackdrop {
+    position:fixed;
+    inset:0;
+    background: rgba(0,0,0,0.90);
+    backdrop-filter: blur(6px) saturate(0.9);
   }
-  .ytFrame iframe { width:100%; height:100%; border:0; display:block; }
 
+  /* Centering layer */
+  .ytPanel {
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:10px;
+  }
+
+  /* BIG cinematic frame */
+  .ytFrame {
+    width: min(1600px, 98vw);
+    height: min(90vh, calc(98vw * 0.5625)); /* preserve 16:9 */
+    background:#000;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:
+      0 30px 80px rgba(0,0,0,.65),
+      0 0 0 1px rgba(255,255,255,.12);
+    animation: cinemaIn 160ms ease-out;
+  }
+
+  .ytFrame iframe {
+    width:100%;
+    height:100%;
+    border:0;
+    display:block;
+  }
+
+  @keyframes cinemaIn {
+    from { transform: scale(0.985) translateY(6px); opacity:0; }
+    to   { transform: scale(1) translateY(0); opacity:1; }
+  }
+
+  /* Close button */
   .ytClose {
-    position:fixed; top:16px; right:16px;
-    width:44px; height:44px;
+    position:fixed;
+    top:16px;
+    right:16px;
+    width:44px;
+    height:44px;
     border-radius:12px;
     border:1px solid rgba(255,255,255,.18);
     background:rgba(15,15,15,.65);
@@ -147,15 +184,19 @@ const embedBase = valid ? `https://www.youtube.com/embed/${id}` : '';
   }
   .ytClose:hover { background:rgba(15,15,15,.85); }
 
+  /* Error state */
   .ytMissing {
     width:min(720px, 94vw);
     border-radius:16px;
-    background:rgba(15,15,15,.85);
+    background:rgba(15,15,15,.90);
     border:1px solid rgba(255,255,255,.12);
     padding:18px;
     color:#fff;
-    box-shadow:0 20px 60px rgba(0,0,0,.45);
   }
   .ytMissingTitle { font-weight:700; margin-bottom:6px; }
-  .ytMissing code { background:rgba(255,255,255,.10); padding:2px 6px; border-radius:8px; }
+  .ytMissing code {
+    background:rgba(255,255,255,.10);
+    padding:2px 6px;
+    border-radius:8px;
+  }
 </style>
