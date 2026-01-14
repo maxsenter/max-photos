@@ -153,3 +153,14 @@ collections:
               - vimeo
 
       - { label: "Body", name: "body", widget: "markdown" }
+      
+  - name: "site"
+    label: "Site Settings"
+    files:
+      - name: "demo_reel"
+        label: "Demo Reel"
+        file: "src/content/site/demo-reel.md"
+        fields:
+          - { name: "title", label: "Title", widget: "string" }
+          - { name: "youtubeId", label: "YouTube ID", widget: "string" }
+          - { name: "poster", label: "Poster", widget: "image", required: false }
