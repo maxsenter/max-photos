@@ -116,87 +116,132 @@ const embedBase = valid ? `https://www.youtube.com/embed/${id}` : '';
 </script>
 
 <style>
-  /* Modal root */
-  .ytModal {
-    display:none;
-    position:fixed;
-    inset:0;
-    z-index:9999;
-  }
-  .ytModal[data-open='1'] { display:block; }
+/* Modal root */
+.ytModal { display:none; position:fixed; inset:0; z-index:9999; }
+.ytModal[data-open='1'] { display:block; }
 
-  /* Lights-down backdrop */
-  .ytBackdrop {
-    position:fixed;
-    inset:0;
-    background: rgba(0,0,0,0.90);
-    backdrop-filter: blur(6px) saturate(0.9);
-  }
+/* Lights-down backdrop + vignette */
+.ytBackdrop{
+  position:fixed;
+  inset:0;
+  background: rgba(0,0,0,0.92);
+  backdrop-filter: blur(7px) saturate(0.9);
+}
+.ytBackdrop::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background: radial-gradient(ellipse at center,
+    rgba(0,0,0,0.10) 0%,
+    rgba(0,0,0,0.55) 55%,
+    rgba(0,0,0,0.92) 100%);
+}
 
-  /* Centering layer */
-  .ytPanel {
-    position:fixed;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:10px;
-  }
+/* Centering layer (tight padding so the frame can get huge) */
+.ytPanel{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding: 8px;
+}
 
-  /* BIG cinematic frame */
-  .ytFrame {
-    width: min(1600px, 98vw);
-    height: min(90vh, calc(98vw * 0.5625)); /* preserve 16:9 */
-    background:#000;
-    border-radius:20px;
-    overflow:hidden;
-    box-shadow:
-      0 30px 80px rgba(0,0,0,.65),
-      0 0 0 1px rgba(255,255,255,.12);
-    animation: cinemaIn 160ms ease-out;
-  }
+/* ============
+   BIG FRAME
+   - Targets 92vh first (feels cinematic)
+   - Uses width = height*(16/9)
+   - Also respects viewport width
+   ============ */
+.ytFrame{
+  /* tweak these if you want: */
+  --maxH: 92vh;
+  --maxW: 98vw;
+  --radius: 22px;
 
-  .ytFrame iframe {
-    width:100%;
-    height:100%;
-    border:0;
-    display:block;
-  }
+  /* width/height chosen so it always fills the screen as much as possible */
+  height: min(var(--maxH), calc(var(--maxW) * 9 / 16));
+  width:  min(var(--maxW), calc(var(--maxH) * 16 / 9));
 
-  @keyframes cinemaIn {
-    from { transform: scale(0.985) translateY(6px); opacity:0; }
-    to   { transform: scale(1) translateY(0); opacity:1; }
-  }
+  background:#000;
+  border-radius: var(--radius);
+  overflow:hidden;
 
-  /* Close button */
-  .ytClose {
-    position:fixed;
-    top:16px;
-    right:16px;
-    width:44px;
-    height:44px;
-    border-radius:12px;
-    border:1px solid rgba(255,255,255,.18);
-    background:rgba(15,15,15,.65);
-    color:#fff;
-    font-size:20px;
-    cursor:pointer;
-  }
-  .ytClose:hover { background:rgba(15,15,15,.85); }
+  /* crisp edge + cinema shadow + EDGE GLOW */
+  box-shadow:
+    0 30px 90px rgba(0,0,0,.70),
+    0 0 0 1px rgba(255,255,255,.14),
 
-  /* Error state */
-  .ytMissing {
-    width:min(720px, 94vw);
-    border-radius:16px;
-    background:rgba(15,15,15,.90);
-    border:1px solid rgba(255,255,255,.12);
-    padding:18px;
-    color:#fff;
-  }
-  .ytMissingTitle { font-weight:700; margin-bottom:6px; }
-  .ytMissing code {
-    background:rgba(255,255,255,.10);
-    padding:2px 6px;
-    border-radius:8px;
-  }
+    /* inner edge glow */
+    0 0 0 1px rgba(185,31,49,.22),
+
+    /* outer glow spill */
+    0 0 38px rgba(185,31,49,.28),
+    0 0 90px rgba(185,31,49,.18);
+
+  transform: translateY(6px) scale(0.985);
+  opacity: 0;
+  animation: cinemaIn 160ms ease-out forwards;
+}
+
+/* optional subtle “screen glow” gradient on top of the video */
+.ytFrame::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 50% 35%,
+      rgba(255,255,255,0.08) 0%,
+      rgba(255,255,255,0.00) 55%);
+  mix-blend-mode: soft-light;
+}
+
+.ytFrame iframe{
+  width:100%;
+  height:100%;
+  border:0;
+  display:block;
+}
+
+@keyframes cinemaIn{
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* Close button */
+.ytClose{
+  position:fixed;
+  top:16px;
+  right:16px;
+  width:44px;
+  height:44px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(15,15,15,.65);
+  color:#fff;
+  font-size:20px;
+  cursor:pointer;
+}
+.ytClose:hover{ background:rgba(15,15,15,.85); }
+
+/* Error state */
+.ytMissing{
+  width:min(720px, 94vw);
+  border-radius:16px;
+  background:rgba(15,15,15,.90);
+  border:1px solid rgba(255,255,255,.12);
+  padding:18px;
+  color:#fff;
+  box-shadow:0 20px 60px rgba(0,0,0,.45);
+}
+.ytMissingTitle{ font-weight:700; margin-bottom:6px; }
+.ytMissing code{ background:rgba(255,255,255,.10); padding:2px 6px; border-radius:8px; }
+
+/* Mobile sanity */
+@media (max-width: 520px){
+  .ytPanel{ padding: 6px; }
+  .ytFrame{ --maxH: 88vh; --maxW: 98vw; --radius: 16px; }
+}
+
 </style>
