@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: kingbutter/max-media
+  repo: maxsenter/max-photos
   branch: main
   base_url: https://deadframe.media
   auth_endpoint: api/auth
