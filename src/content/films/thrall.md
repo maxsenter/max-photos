@@ -1,6 +1,6 @@
 ---
 title: THRALL
-year: 2024
+year: 2025
 role: DP
 format: Digital
 camera: SonyFx 300
