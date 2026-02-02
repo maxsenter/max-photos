@@ -1,6 +1,6 @@
 ---
 title: About
-kicker: FIELD NOTES
+kicker: Who Am I?
 headline: About
 bio: >-
   Hi, I'm Max! I'm a photographer and filmmaker based in Indiana.
