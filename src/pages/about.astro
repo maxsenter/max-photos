@@ -1,6 +1,6 @@
 ---
 import Base from "../layouts/Base.astro";
-import Content, { frontmatter } from "../content/pages/about.md";
+import { frontmatter } from "../content/pages/about.md";
 
 const {
   title = "About",
@@ -9,6 +9,7 @@ const {
   bio = "",
   headshot = "",
   socials = [],
+  statement = "",
 } = frontmatter ?? {};
 
 function iconSvg(name) {
@@ -81,10 +82,7 @@ function iconSvg(name) {
     <div class="grid">
       <article class="card">
         <h2>Statement</h2>
-        <p>
-          Swap this with a 2–4 sentence “why” statement: what you make, what you chase,
-          and what you refuse to polish away.
-        </p>
+        <p>{statement}</p>
       </article>
 
       <article class="card">
@@ -105,11 +103,6 @@ function iconSvg(name) {
         <a class="btnPrimary" href="mailto:sentermaxx@gmail.com">Send Email</a>
       </article>
     </div>
-
-    <article style="margin-top:24px; max-width:70ch; color: var(--muted);">
-      <Content />
-    </article>
-  </section>
 
   <style>
     .about { padding: 18px 0 42px; max-width: 1100px; margin: 0 auto; }
