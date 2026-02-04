@@ -1,6 +1,5 @@
 ---
 title: PSYCHO
-year: ""
 featured: false
 cover: https://assets.deadframe.media/uploads/2026-01/1769355103761-DSC_0861.jpg
 images:
